@@ -67,13 +67,7 @@ export default function TemplatePartEdit( {
 	if ( postId ) {
 		// Part of a template file, post ID already resolved.
 		return (
-			<div
-				className={
-					isSelected || hasSelectedInnerBlock
-						? 'wp-block-template-part__selected'
-						: null
-				}
-			>
+			<>
 				{ ( isSelected || hasSelectedInnerBlock ) && (
 					<TemplatePartNamePanel
 						postId={ postId }
@@ -84,7 +78,7 @@ export default function TemplatePartEdit( {
 					postId={ postId }
 					hasInnerBlocks={ innerBlocks.length > 0 }
 				/>
-			</div>
+			</>
 		);
 	}
 	if ( ! initialSlug.current && ! initialTheme.current ) {
