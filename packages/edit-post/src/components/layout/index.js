@@ -168,7 +168,7 @@ function Layout() {
 			<LocalAutosaveMonitor />
 			<EditPostKeyboardShortcuts />
 			<EditorKeyboardShortcutsRegister />
-			<SettingsSidebar showTooltip={ ! showIconLabels } />
+			<SettingsSidebar />
 			<FocusReturnProvider>
 				<InterfaceSkeleton
 					className={ className }
