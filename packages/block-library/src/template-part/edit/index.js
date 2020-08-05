@@ -3,6 +3,7 @@
  */
 import { useRef, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -69,6 +70,7 @@ export default function TemplatePartEdit( {
 		return (
 			<TemplatePartEditor
 				postId={ postId }
+				slug={ slug }
 				setAttributes={ setAttributes }
 				isSelected={ isSelected }
 				hasSelectedInnerBlock={ hasSelectedInnerBlock }
@@ -90,16 +92,32 @@ const TemplatePartEditor = ( {
 	isSelected,
 	hasSelectedInnerBlock,
 	innerBlocks,
+	slug,
 } ) => {
 	const hasBeenSelectedRef = useRef( false );
-	const { createInfoNotice } = useDispatch( 'core/notices' );
+	const { createWarningNotice, removeNotice } = useDispatch( 'core/notices' );
 	useEffect( () => {
 		if (
 			! hasBeenSelectedRef.current &&
 			( isSelected || hasSelectedInnerBlock )
 		) {
-			// No notice shown.. I think we need to add these to edit-site.
-			createInfoNotice( 'This is a notice!' );
+			createWarningNotice(
+				sprintf(
+					'You are editing %s.  Changes apply to everywhere this block is used.',
+					slug
+				),
+				{
+					type: 'snackbar',
+					isDismissable: true,
+					speak: true,
+					id: 'template-part-edit-warning',
+				}
+			);
+		} else if (
+			hasBeenSelectedRef.current &&
+			! ( isSelected || hasSelectedInnerBlock )
+		) {
+			removeNotice( 'template-part-edit-warning' );
 		}
 		hasBeenSelectedRef.current = isSelected || hasSelectedInnerBlock;
 	}, [ isSelected, hasSelectedInnerBlock ] );
