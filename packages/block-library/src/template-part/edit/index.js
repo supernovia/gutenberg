@@ -67,18 +67,13 @@ export default function TemplatePartEdit( {
 	if ( postId ) {
 		// Part of a template file, post ID already resolved.
 		return (
-			<>
-				{ ( isSelected || hasSelectedInnerBlock ) && (
-					<TemplatePartNamePanel
-						postId={ postId }
-						setAttributes={ setAttributes }
-					/>
-				) }
-				<TemplatePartInnerBlocks
-					postId={ postId }
-					hasInnerBlocks={ innerBlocks.length > 0 }
-				/>
-			</>
+			<TemplatePartEditor
+				postId={ postId }
+				setAttributes={ setAttributes }
+				isSelected={ isSelected }
+				hasSelectedInnerBlock={ hasSelectedInnerBlock }
+				innerBlocks={ innerBlocks }
+			/>
 		);
 	}
 	if ( ! initialSlug.current && ! initialTheme.current ) {
@@ -88,3 +83,39 @@ export default function TemplatePartEdit( {
 	// Part of a template file, post ID not resolved yet.
 	return null;
 }
+
+const TemplatePartEditor = ( {
+	postId,
+	setAttributes,
+	isSelected,
+	hasSelectedInnerBlock,
+	innerBlocks,
+} ) => {
+	const hasBeenSelectedRef = useRef( false );
+	const { createInfoNotice } = useDispatch( 'core/notices' );
+	useEffect( () => {
+		if (
+			! hasBeenSelectedRef.current &&
+			( isSelected || hasSelectedInnerBlock )
+		) {
+			// No notice shown.. I think we need to add these to edit-site.
+			createInfoNotice( 'This is a notice!' );
+		}
+		hasBeenSelectedRef.current = isSelected || hasSelectedInnerBlock;
+	}, [ isSelected, hasSelectedInnerBlock ] );
+	// Part of a template file, post ID already resolved.
+	return (
+		<>
+			{ ( isSelected || hasSelectedInnerBlock ) && (
+				<TemplatePartNamePanel
+					postId={ postId }
+					setAttributes={ setAttributes }
+				/>
+			) }
+			<TemplatePartInnerBlocks
+				postId={ postId }
+				hasInnerBlocks={ innerBlocks.length > 0 }
+			/>
+		</>
+	);
+};
